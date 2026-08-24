@@ -1,0 +1,9 @@
+import { cookies } from "next/headers";
+import { NextResponse } from "next/server";
+import { adminCookieName, isAdmin } from "../../../../lib/admin-auth";
+import { createSupabaseAdminClient } from "../../../../lib/supabase";
+
+async function admin() { return isAdmin((await cookies()).get(adminCookieName)?.value) ? createSupabaseAdminClient() : null; }
+export async function POST(request: Request) { const supabase = await admin(); if (!supabase) return NextResponse.json({ error: "Unauthorized atau Supabase belum siap" }, { status: 401 }); const { id, name, description, target_price, photo_url } = await request.json(); const { error } = await supabase.from("wishlist_items").insert({ id, name, description: description || null, target_price, photo_url: photo_url || null }); return error ? NextResponse.json({ error: "Gagal menambah item" }, { status: 400 }) : NextResponse.json({ ok: true }); }
+export async function PUT(request: Request) { const supabase = await admin(); if (!supabase) return NextResponse.json({ error: "Unauthorized atau Supabase belum siap" }, { status: 401 }); const { id, name, description, target_price, photo_url } = await request.json(); const { error } = await supabase.from("wishlist_items").update({ name, description: description || null, target_price, photo_url: photo_url || null }).eq("id", id); return error ? NextResponse.json({ error: "Gagal mengubah item" }, { status: 400 }) : NextResponse.json({ ok: true }); }
+export async function DELETE(request: Request) { const supabase = await admin(); if (!supabase) return NextResponse.json({ error: "Unauthorized atau Supabase belum siap" }, { status: 401 }); const id = new URL(request.url).searchParams.get("id"); const { error } = await supabase.from("wishlist_items").delete().eq("id", id); return error ? NextResponse.json({ error: "Item tidak dapat dihapus; hapus kontribusinya terlebih dahulu." }, { status: 400 }) : NextResponse.json({ ok: true }); }
