@@ -33,7 +33,7 @@ export default function Registry({ initialItems, demoMode }: { initialItems: Wis
     {demoMode && <p className="demo">Mode demo aktif — sambungkan Supabase saat data registry sudah siap.</p>}
     <section className="payment"><div className="qris"><img src="/qris.jpeg" alt="QRIS untuk patungan wedding registry" /></div><div><h2>Cara patungan</h2><p>1. Pilih wishlist dan isi nominal di formulir.</p><p>2. Transfer melalui QRIS atau rekening yang dicantumkan pengantin.</p><p>3. Pastikan nominal transfer sama dengan yang kamu isi di form, ya.</p></div></section>
     <section className="grid">{items.map((item) => { const percent = Math.min(item.progress_percent, 100); return <article className="card" key={item.id}>
-      <div className="image">🎁</div><h2>{item.name}</h2>{item.description && <p className="description">{item.description}</p>}
+      <div className="image">{item.photo_url ? <img src={item.photo_url} alt={item.name} /> : "🎁"}</div><h2>{item.name}</h2>{item.description && <p className="description">{item.description}</p>}
       <div className="track"><div className="bar" style={{ width: `${percent}%` }} /></div><p className="meta">Terkumpul <b>{rupiah(item.current_total)}</b> <span>({item.progress_percent}%)</span> dari harga <b>{rupiah(item.target_price)}</b></p>
       {item.progress_percent >= 100 && <p className="complete">🎉 Target terpenuhi!</p>}
       <button onClick={() => { setSelected(item); setMessage(""); }}>Ikut patungan</button>
