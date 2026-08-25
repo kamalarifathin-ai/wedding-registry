@@ -10,3 +10,5 @@ d/
 *.key
 *.log
 *.tsbuildinfo
+
+.vercel
